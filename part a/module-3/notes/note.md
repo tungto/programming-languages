@@ -1,3 +1,0 @@
-# Mindset
-
-start from blank
