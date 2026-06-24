@@ -15,3 +15,12 @@ console.log(x); // 10 as x is bind to 10 in outer scope
 
 What is expression? 
 What is dynamic env? static env? 
+the declaration must be processed
+
+
+
+n = 14
+x = 0
+n = 0
+b = 8
+a = 8
