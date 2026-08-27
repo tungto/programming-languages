@@ -1,0 +1,7 @@
+| Week | Module Name                           | Lectures | Time to complete | Practice Problems | Quiz                        | Overall learning goal                                                                  |
+| ---- | ------------------------------------- | -------- | ---------------- | ----------------- | --------------------------- | -------------------------------------------------------------------------------------- |
+| 1    | Beginning Student Language            | 8        | 5-8 Hours        | 4                 | none                        | Learn to program with the core of the programming language used throughout the course. |
+| 2    | How to Design Functions (HtDF) Recipe | 6        | 4-7 Hours        | 3                 | Self-Assessed Design Quiz   | Learn to use the HtDF recipe to design functions that consume simple primitive data.   |
+| 3    | How to Design Data (HtDD) Recipe      | 12       | 5-8 Hours        | 3                 | Self-Assessed Design Quiz   | Learn to use the HtDD recipe to design data definitions for atomic data.               |
+| 4    | How to Design Worlds (HtDW) Recipe    | 7        | 3-5 Hours        | 1                 | none                        |                                                                                        |
+| 4    | Compound Data                         | 3        | 4-6 Hours        | 3                 | Peer-Assessed Final Project |                                                                                        |
