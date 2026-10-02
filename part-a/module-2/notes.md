@@ -106,4 +106,33 @@ val b = a + "hello";
   - boolean constants
   - less-than comparision
 - Questions to ask when learn new construct in a pl
-  
+- what is OPTION?
+
+
+
+
+<!-- fun binding -->
+
+```sml
+fun pow (x: int, y: int) = 
+  if y = 0
+  then 0
+  else x * pow (x, y - 1)
+```
+
+When learn new construct we ask: 
+- syntax
+- how it type-checking
+- how it evaluate
+- how to call/ use it
+
+**Pair and other tuples**
+What is an tuples? 
+**Pairs**
+Syntax: (e1, e2)
+Evaluatation: 
+
+
+
+## summary 1 notes
+new_env = old_env + {x: v} 

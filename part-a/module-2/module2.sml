@@ -26,7 +26,7 @@ fun countup_from1 (x:int) =
 		else from :: count(from+1)
 	in 
 		count (1)
-	end
+	end;
 
 (* find the max value? 
 
@@ -35,7 +35,7 @@ if tl xs = null => hd xs   = max?
 if hd xs > bad_max(tl xs => if hd > run to next max value)
 if hd xs < bad_max(tl xs) => pass the tl 
 *)
-fun bad_max (xs: int list) =
+(* fun bad_max (xs: int list) =
 	if null xs
 		then 0
 	else if null (tl xs)
@@ -59,8 +59,31 @@ fun good_max (xs: int list) =
 			if hd xs > tail_ans
 				then hd xs
 			else tail_ans
-		end;
+		end; *)
 
 
  
- 
+ (* better way, will not use recursive but create inner function instead *)
+
+ (* fun better_max2 (xs: int list) = 
+	if null xs
+		then NONE
+	else let
+			fun max_nonempty (xs: int list) = 
+				if null (tl xs)
+					then hd xs
+				else let val tl_ans = max_nonempty(xs)
+					in 
+						if hd xs > tl_ans
+							then hd xs
+						else tl_ans
+						end
+		in 
+			SOME(max_nonempty xs)
+		end *)
+
+
+
+
+
+3 + 3.14
