@@ -16,17 +16,15 @@ a JS/TS side project.
 ### 2.1 Graph
 
 ```
-module-1 --> module-2 --> module-3 --> module-4
+part-a  (sections S1 -> S2 -> S3 -> S4 inside one topic)
 ```
 
-Critical path: the whole chain. Each section builds on the last, so there is no parallel topic.
+Critical path: the one topic. Its four sections are worked in order inside it (`TOPIC.md` subtopics
+are prefixed S1-S4); each section builds on the last, so there is no parallel topic.
 
 | # | Topic | Needs | Unlocks | Bar category | Est. h | Source |
 |---|---|---|---|---|--:|---|
-| 1 | [module-1](topics/module-1/TOPIC.md) | - | module-2 | code + explain | 9 | Section 1 videos, `docs/section1sum.pdf`, HW1 |
-| 2 | [module-2](topics/module-2/TOPIC.md) | module-1 | module-3 | code + explain | 9 | Section 2 videos, `docs/section2sum.pdf`, HW2 |
-| 3 | [module-3](topics/module-3/TOPIC.md) | module-2 | module-4 | code + explain | 9 | Section 3 videos, `docs/section3sum.pdf`, HW3 |
-| 4 | [module-4](topics/module-4/TOPIC.md) | module-3 | - | code + explain | 9 | Section 4 videos, `docs/section4sum.pdf`, HW4 |
+| 1 | [part-a](topics/part-a/TOPIC.md) | - | - | code + explain | 36 | Sections 1-4 videos, `docs/section1sum.pdf`..`section4sum.pdf`, HW1-4 |
 
 `Needs` must match each `TOPIC.md`'s **Needs** field exactly; `validate.py` checks it. A
 `(lite)` need only requires the configured minimum level on its subtopics.
@@ -55,33 +53,33 @@ A forecast, not a schedule. The week numbers move; the order does not.
 
 | Week | Main | Second | Outcome |
 |---|---|---|---|
-| 1 | module-1 | - | HW1 functions 1-6 done from blank |
-| 2 | module-1 | - | HW1 complete, tests pass |
-| 3 | module-1 | - | module-1 passed (CP1) |
+| 1 | part-a (S1) | - | HW1 functions 1-6 done from blank |
+| 2 | part-a (S1) | - | HW1 complete, tests pass |
+| 3 | part-a (S1) | - | S1 bar met (CP1) |
 
 ### Phase 2: W4-6
 
 | Week | Main | Second | Outcome |
 |---|---|---|---|
-| 4 | module-2 | - | datatypes, case, patterns predict-level |
-| 5 | module-2 | - | HW2 complete |
-| 6 | module-2 | - | module-2 passed |
+| 4 | part-a (S2) | - | datatypes, case, patterns predict-level |
+| 5 | part-a (S2) | - | HW2 complete |
+| 6 | part-a (S2) | - | S2 bar met |
 
 ### Phase 3: W7-9
 
 | Week | Main | Second | Outcome |
 |---|---|---|---|
-| 7 | module-3 | - | map/filter/fold and closures do-alone |
-| 8 | module-3 | - | HW3 complete |
-| 9 | module-3 | - | module-3 passed (CP2) |
+| 7 | part-a (S3) | - | map/filter/fold and closures do-alone |
+| 8 | part-a (S3) | - | HW3 complete |
+| 9 | part-a (S3) | - | S3 bar met (CP2) |
 
 ### Phase 4: W10-12
 
 | Week | Main | Second | Outcome |
 |---|---|---|---|
-| 10 | module-4 | - | type inference by hand on 5 examples |
-| 11 | module-4 | - | HW4 / module exercises complete |
-| 12 | module-4 | - | module-4 passed (CP3) |
+| 10 | part-a (S4) | - | type inference by hand on 5 examples |
+| 11 | part-a (S4) | - | HW4 / module exercises complete |
+| 12 | part-a (S4) | - | S4 bar met (CP3) |
 
 ## 5. Tracks and effort
 
@@ -114,8 +112,8 @@ Never dropped at any tier: due re-tests, each section's homework.
 
 | CP | Week | Bar | Failure branch |
 |---|--:|---|---|
-| CP1 | 3 | module-1 passed: HW1 tests pass, cold function from blank, 2-min explain of "no mutation" and let/scope | module-1 keeps the slot for W4; every later week shifts +1; horizon moves to 2027-02-21 |
-| CP2 | 9 | module-3 passed: map/filter/fold from blank, closures explained with a JS example | if module-2 or 3 is still open, cut subtopic "ADTs with closures (vs Java/C)" to L2 and keep the dates |
-| CP3 | 12 | module-4 passed, modules 1-3 kept | extend by 2 weeks max, then stop and decide Part B vs apply-in-JS |
+| CP1 | 3 | S1 bar met: HW1 tests pass, cold function from blank, 2-min explain of "no mutation" and let/scope | S1 keeps the slot for W4; every later week shifts +1; horizon moves to 2027-02-21 |
+| CP2 | 9 | S3 bar met: map/filter/fold from blank, closures explained with a JS example | if S2 or S3 is still open, cut subtopic "ADTs with closures (vs Java/C)" to L2 and keep the dates |
+| CP3 | 12 | S4 bar met, S1-S3 kept; part-a passed | extend by 2 weeks max, then stop and decide Part B vs apply-in-JS |
 
 The failure branch is written in advance and applied verbatim. Never improvised on the day.

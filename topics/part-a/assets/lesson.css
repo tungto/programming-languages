@@ -530,3 +530,16 @@ details.try { border: 1px solid var(--line, #ddd); border-radius: 4px; padding: 
 details.try > summary { cursor: pointer; font-weight: 600; }
 details.try[open] > summary { margin-bottom: .4rem; }
 details.try .hint { opacity: .8; font-style: italic; }
+
+/* key-word cards (added for key-words lessons) */
+.terms { display: grid; gap: .8rem; margin: 1rem 0; max-width: 1000px; }
+.term { border: 1px solid var(--line); border-radius: 4px; padding: .7rem .95rem; }
+.term h4 { margin: 0 0 .3rem; }
+.term p { margin: .25rem 0; max-width: 68ch; }
+.term pre { margin: .4rem 0; }
+.term .lbl-row { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .7; margin-right: .4rem; }
+
+/* course-wide nav in the rail (part-a) */
+.rail .course-sec { font-size: 11px; color: var(--ink-3); margin: .7rem 0 .15rem; }
+.rail .course a.here { color: var(--accent); font-weight: 600; }
+.rail .course { margin-bottom: 1rem; }

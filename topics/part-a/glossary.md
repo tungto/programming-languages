@@ -1,4 +1,4 @@
-# module-4 — glossary
+# part-a — glossary
 
 One line per cell. Anything longer belongs in `deep-dive.md`. The definition is the user's own
 wording, never Claude's.

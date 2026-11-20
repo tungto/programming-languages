@@ -17,7 +17,7 @@ Only `coach` writes this file.
 | Streak | 0 days |
 | Blocks this week | 0 of 3 |
 | Mode | normal |
-| Next action | Plan starts Mon 2026-11-23. First block: `learn-session` module-1, subtopic "val bindings, expressions, environments", 40 min |
+| Next action | Plan starts Mon 2026-11-23. First block: `learn-session` part-a (S1), subtopic "val bindings, expressions, environments", 40 min |
 
 ## Daily log (last 10)
 
@@ -37,10 +37,7 @@ Only `coach` writes this file.
 
 | Topic | State | Level | Done | Needs | Hours | Planned finish | ETA | Flag |
 |---|---|---|---|---|---|---|---|---|
-| module-1 | active | - | 0/6 | - | 0/9 | W3 | W3 | on track |
-| module-2 | locked | - | 0 | module-1 | 0/9 | W6 | W6 | - |
-| module-3 | locked | - | 0 | module-2 | 0/9 | W9 | W9 | - |
-| module-4 | locked | - | 0 | module-3 | 0/9 | W12 | W12 | - |
+| part-a | active | - | 0/23 | - | 0/36 | W12 | W12 | on track |
 
 ## Critical path
 
