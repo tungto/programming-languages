@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "learning-kit@learning-kit": true
+  },
+  "extraKnownMarketplaces": {
+    "learning-kit": {
+      "source": {
+        "source": "github",
+        "repo": "tungto/learning-kit"
+      }
+    }
+  }
+}

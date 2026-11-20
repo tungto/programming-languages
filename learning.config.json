@@ -1,0 +1,124 @@
+{
+  "kit_version": "0.4.0",
+  "project": {
+    "name": "programming-languages",
+    "title": "Programming Languages (SML course)",
+    "notes": "Coursera Programming Languages Part A (Dan Grossman), sections 1-4, Standard ML. Side track next to interview-v2."
+  },
+  "plan": {
+    "start_date": "2026-11-23",
+    "total_weeks": 12,
+    "horizon_label": "2027-02-14: Part A sections 1-4 kept",
+    "weekly_hours": 3.0,
+    "weekly_block_bar": 3,
+    "phases": [
+      {
+        "name": "Phase 1",
+        "heading": "### Phase 1: W1-3",
+        "first_week": 1,
+        "last_week": 3
+      },
+      {
+        "name": "Phase 2",
+        "heading": "### Phase 2: W4-6",
+        "first_week": 4,
+        "last_week": 6
+      },
+      {
+        "name": "Phase 3",
+        "heading": "### Phase 3: W7-9",
+        "first_week": 7,
+        "last_week": 9
+      },
+      {
+        "name": "Phase 4",
+        "heading": "### Phase 4: W10-12",
+        "first_week": 10,
+        "last_week": 12
+      }
+    ],
+    "effort_levels": {
+      "minimum_day_minutes": 10,
+      "minimum_minutes": 20,
+      "target_minutes": 30,
+      "stretch_minutes": 60
+    }
+  },
+  "graph": {
+    "max_parallel_new_topics": 1
+  },
+  "levels": {
+    "count": 6,
+    "names": [
+      "recognize",
+      "predict",
+      "do alone",
+      "spot the failure mode",
+      "explain aloud",
+      "applied for 7 days"
+    ]
+  },
+  "esl": {
+    "enabled": true,
+    "level": "B1",
+    "output_ceiling": "B2"
+  },
+  "perform": {
+    "mode": "application",
+    "scenarios": [
+      {
+        "name": "cold homework",
+        "prompt": "a homework-style function from a blank file, with tests, no notes, 25 minutes"
+      },
+      {
+        "name": "teach-back",
+        "prompt": "explain the section's key idea (e.g. closures, pattern matching) to a JS developer in 2 minutes, with one SML and one JS example"
+      },
+      {
+        "name": "predict",
+        "prompt": "read 5 short SML snippets, predict type and value before running them"
+      }
+    ]
+  },
+  "pace": {
+    "gate_fraction": 0.6,
+    "drop_ladder": [
+      {
+        "tier": 1,
+        "drops": "stretch blocks and challenge problems",
+        "saves_hours": 0.5
+      },
+      {
+        "tier": 2,
+        "drops": "Java/C comparison files and optional videos; keep homework",
+        "saves_hours": 0.5
+      }
+    ],
+    "never_dropped": [
+      "due re-tests",
+      "each section's homework"
+    ]
+  },
+  "coach": {
+    "slot_map": [
+      {
+        "slot": "weekday",
+        "days": "Tue, Thu",
+        "minutes": 40,
+        "use": "main module, learn-session or teach"
+      },
+      {
+        "slot": "weekend",
+        "days": "Sat",
+        "minutes": 60,
+        "use": "homework or perform-drill"
+      },
+      {
+        "slot": "weekly review",
+        "days": "Sun",
+        "minutes": 20,
+        "use": "coach weekly review + active-revise"
+      }
+    ]
+  }
+}

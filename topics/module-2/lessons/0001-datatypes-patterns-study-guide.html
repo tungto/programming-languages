@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Types you build, patterns you match · module-2</title>
+<link rel="stylesheet" href="../assets/lesson.css"><script src="../assets/lesson.js" defer></script></head>
+<body data-ui-dark="Dark" data-ui-light="Light" data-ui-pause="Pause" data-ui-resume="Resume">
+<div class="layout">
+<aside class="rail"><div class="rail-brand">Types you build, patterns you match</div><div class="rail-sub">module-2 study guide</div>
+<button class="rail-toggle" id="navToggle" aria-expanded="false">Contents</button>
+<nav id="toc"><div class="rail-part">I · Building new types</div><a href="#s1"><span class="n">1</span><span>Each-of, one-of, self-reference</span></a><a href="#s2"><span class="n">2</span><span>Records and the truth about tuples</span></a><a href="#s3"><span class="n">3</span><span>Datatype bindings</span></a><a href="#s4"><span class="n">4</span><span>Case expressions</span></a><a href="#s5"><span class="n">5</span><span>Recursive datatypes: expression trees</span></a><a href="#s6"><span class="n">6</span><span>Type synonyms, lists and options as datatypes</span></a><div class="rail-part">II · Pattern matching everywhere</div><a href="#s7"><span class="n">7</span><span>Every function takes one argument</span></a><a href="#s8"><span class="n">8</span><span>Type inference, polymorphism and equality types</span></a><a href="#s9"><span class="n">9</span><span>Nested patterns</span></a><a href="#s10"><span class="n">10</span><span>Function patterns: fun with multiple cases</span></a><div class="rail-part">III · Control and cost</div><a href="#s11"><span class="n">11</span><span>Exceptions</span></a><a href="#s12"><span class="n">12</span><span>Tail recursion and accumulators</span></a><a href="#s13"><span class="n">13</span><span>Tail position, precisely</span></a><div class="rail-part">Close</div><a href="#s14"><span class="n">14</span><span>In short</span></a></nav></aside>
+<main>
+<header class="masthead"><div class="eyebrow">Study guide · from section summary</div>
+<h1>Types you build, patterns you match</h1>
+<p class="lede">Section 2 in one page: how to build your own types (each-of, one-of, self-reference) and how pattern matching takes them apart. It is a guided re-read with try-first questions, not a replacement for the homework or the videos.</p>
+<div class="meta"><span><b>Source</b> · <a href="../docs/section2sum.pdf">section2sum.pdf</a> (Grossman, Coursera PL)</span>
+<span><b>Time</b> · about 75 min, split by part</span><span><b>How to use</b> · answer each "Try first" out loud before opening it</span>
+<span><b>Recommended</b> · <a href="../docs/section2sum.pdf">Section 2 summary PDF</a></span></div></header>
+<div class="part"><div class="part-n">Part I</div><h2>Building new types</h2><p>Three building blocks make every compound type.</p></div><div class="wrap"><section id="s1">
+<h3><span class="n">1</span><span>Each-of, one-of, self-reference</span></h3>
+<div class="col"><p>Every compound type is built from <strong>each-of</strong> (all parts present), <strong>one-of</strong> (exactly one variant) and <strong>self-reference</strong> (recursion). <a href="../docs/section2sum.pdf#page=1">[summary p.1]</a></p>
+</div>
+<div class="tw"><table><thead><tr><th>Building block</th><th>Meaning</th><th>ML example</th></tr></thead><tbody><tr><td>Each-of</td><td>contains t1 <em>and</em> t2</td><td>tuples, records</td></tr><tr><td>One-of</td><td>contains t1 <em>or</em> t2</td><td>options, datatypes</td></tr><tr><td>Self-reference</td><td>may refer to itself</td><td>lists, trees</td></tr></tbody></table></div>
+<details class="try"><summary>Try first: Classify <code>int list</code> using the three blocks.</summary><p>One-of (empty or cons) + each-of (cons has a head and a tail) + self-reference (the tail is an int list).</p></details>
+</section><section id="s2">
+<h3><span class="n">2</span><span>Records and the truth about tuples</span></h3>
+<div class="col"><p>A record <code>{name = "A", id = 7}</code> accesses fields <strong>by name</strong>; a tuple is just <strong>syntactic sugar</strong> for a record with fields named 1, 2, ... <a href="../docs/section2sum.pdf#page=2">[summary p.2]</a></p>
+</div>
+<pre><code>val r = {name = &quot;Ada&quot;, id = 41}     (* {id:int, name:string} *)
+val n = #name r
+val t = {2 = &quot;hi&quot;, 1 = 3}            (* this IS (3, &quot;hi&quot;) : int * string *)</code></pre>
+<details class="try"><summary>Try first: When would you prefer a record over a tuple?</summary><p>When there are many fields or fields of the same type: names prevent mixing up position 3 and 4. Tuples fit short, obvious pairs.</p></details>
+<p class="col">Lecture code: <a href="../code/21_records.sml"><code>21_records.sml</code></a>, <a href="../code/22_tuples_as_syntactic_sugar.sml"><code>22_tuples_as_syntactic_sugar.sml</code></a></p>
+</section><section id="s3">
+<h3><span class="n">3</span><span>Datatype bindings</span></h3>
+<div class="col"><p><code>datatype t = C1 of t1 | C2 of t2 | C3</code> adds a new type t and <strong>constructors</strong> - functions that build a t and tag which variant it is. <a href="../docs/section2sum.pdf#page=3">[summary p.3]</a></p>
+</div>
+<pre><code>datatype mytype = TwoInts of int * int
+                | Str of string
+                | Pizza
+(* TwoInts : int * int -&gt; mytype,  Pizza : mytype *)
+val a = Str &quot;hi&quot;</code></pre>
+<p class="col">Lecture code: <a href="../code/23_datatype_bindings.sml"><code>23_datatype_bindings.sml</code></a>, <a href="../code/25_useful_datatypes.sml"><code>25_useful_datatypes.sml</code></a></p>
+</section><section id="s4">
+<h3><span class="n">4</span><span>Case expressions</span></h3>
+<div class="col"><p><code>case e of p1 => e1 | p2 => e2</code> checks the tag and binds the carried data in one step; the type checker <strong>warns about missing and redundant branches</strong>. <a href="../docs/section2sum.pdf#page=4">[summary p.4]</a></p>
+</div>
+<pre><code>fun f (x : mytype) =
+    case x of
+        Pizza =&gt; 3
+      | Str s =&gt; 8
+      | TwoInts (i1, i2) =&gt; i1 + i2</code></pre>
+<div class="note crit"><span class="note-label">Easy to get wrong: why not isStr/getStr functions?</span><p>Case makes it impossible to forget a variant or read data from the wrong one; the compiler checks exhaustiveness.</p></div>
+<p class="col">Lecture code: <a href="../code/24_case_expressions.sml"><code>24_case_expressions.sml</code></a></p>
+</section><section id="s5">
+<h3><span class="n">5</span><span>Recursive datatypes: expression trees</span></h3>
+<div class="col"><p>A datatype can refer to itself, which makes trees easy; functions over them recur once per <strong>recursive constructor field</strong>. <a href="../docs/section2sum.pdf#page=5">[summary p.5]</a></p>
+</div>
+<pre><code>datatype exp = Constant of int
+             | Negate of exp
+             | Add of exp * exp
+             | Multiply of exp * exp
+
+fun eval e =
+    case e of
+        Constant i =&gt; i
+      | Negate e2 =&gt; ~ (eval e2)
+      | Add (e1, e2) =&gt; eval e1 + eval e2
+      | Multiply (e1, e2) =&gt; eval e1 * eval e2</code></pre>
+<details class="try"><summary>Try first: Write <code>number_of_adds : exp -> int</code>.</summary><p>Constant _ => 0, Negate e => number_of_adds e, Add(a,b) => 1 + both, Multiply(a,b) => both summed.</p></details>
+<p class="col">Lecture code: <a href="../code/28_another_expression_example.sml"><code>28_another_expression_example.sml</code></a></p>
+</section><section id="s6">
+<h3><span class="n">6</span><span>Type synonyms, lists and options as datatypes</span></h3>
+<div class="col"><p><code>type name = t</code> only <strong>adds a new name</strong>, never a new type; lists and options are ordinary (polymorphic) datatypes you can case on. <a href="../docs/section2sum.pdf#page=7">[summary p.7]</a></p>
+</div>
+<pre><code>type card = suit * rank            (* card and suit*rank are interchangeable *)
+fun sum xs = case xs of [] =&gt; 0 | x :: xs&#x27; =&gt; x + sum xs&#x27;
+fun inc_or_zero o = case o of NONE =&gt; 0 | SOME i =&gt; i + 1</code></pre>
+<p class="col">Lecture code: <a href="../code/27_type_synonyms.sml"><code>27_type_synonyms.sml</code></a>, <a href="../code/29_list_and_option_datatypes.sml"><code>29_list_and_option_datatypes.sml</code></a>, <a href="../code/30_polymorphic_datatypes.sml"><code>30_polymorphic_datatypes.sml</code></a></p>
+</section></div><div class="part"><div class="part-n">Part II</div><h2>Pattern matching everywhere</h2><p>Patterns are not just for case: every val and fun binding uses one.</p></div><div class="wrap"><section id="s7">
+<h3><span class="n">7</span><span>Every function takes one argument</span></h3>
+<div class="col"><p><code>val (x, y, z) = e</code> is a pattern match, and <code>fun f (x, y, z) = e</code> is <strong>one argument matched against a tuple pattern</strong>. <a href="../docs/section2sum.pdf#page=10">[summary p.10]</a></p>
+</div>
+<pre><code>fun full_name {first = x, middle = y, last = z} = x ^ &quot; &quot; ^ y ^ &quot; &quot; ^ z
+fun rotate (x, y, z) = (y, z, x)
+val t = (1, 2, 3)
+val r = rotate t      (* passing one tuple value works *)</code></pre>
+<p class="col">Lecture code: <a href="../code/31_eachof_pattern_matching.sml"><code>31_eachof_pattern_matching.sml</code></a></p>
+</section><section id="s8">
+<h3><span class="n">8</span><span>Type inference, polymorphism and equality types</span></h3>
+<div class="col"><p>Without type annotations ML infers the <strong>most general type</strong>; unconstrained types become <code>'a</code>, and <code>''a</code> means "any type that supports =". <a href="../docs/section2sum.pdf#page=11">[summary p.11]</a></p>
+</div>
+<pre><code>fun append (xs, ys) = case xs of [] =&gt; ys | x::xs&#x27; =&gt; x :: append (xs&#x27;, ys)
+(* &#x27;a list * &#x27;a list -&gt; &#x27;a list *)
+fun same (x, y) = if x = y then &quot;yes&quot; else &quot;no&quot;
+(* &#x27;&#x27;a * &#x27;&#x27;a -&gt; string *)</code></pre>
+<details class="try"><summary>Try first: Is <code>'a list * 'a list -> 'a list</code> more general than <code>string list * string list -> string list</code>?</summary><p>Yes: replace 'a with string consistently and you get the second, so the first can be used anywhere the second is needed.</p></details>
+<p class="col">Lecture code: <a href="../code/32_type_inference.sml"><code>32_type_inference.sml</code></a>, <a href="../code/33_polymorphic_and_equality_types.sml"><code>33_polymorphic_and_equality_types.sml</code></a></p>
+</section><section id="s9">
+<h3><span class="n">9</span><span>Nested patterns</span></h3>
+<div class="col"><p>Patterns nest to any depth, so one branch can check shape and bind deep parts at once; <code>_</code> matches anything without binding. <a href="../docs/section2sum.pdf#page=13">[summary p.13]</a></p>
+</div>
+<pre><code>fun zip3 lists =
+    case lists of
+        ([], [], []) =&gt; []
+      | (h1::t1, h2::t2, h3::t3) =&gt; (h1, h2, h3) :: zip3 (t1, t2, t3)
+      | _ =&gt; raise ListLengthMismatch
+
+fun nondecreasing xs =
+    case xs of
+        [] =&gt; true
+      | _ :: [] =&gt; true
+      | h :: (n :: t) =&gt; h &lt;= n andalso nondecreasing (n :: t)</code></pre>
+<div class="note crit"><span class="note-label">Easy to get wrong: nesting case inside case</span><p>If you write case inside case to inspect parts, a nested pattern is usually clearer and lets the compiler check coverage.</p></div>
+<p class="col">Lecture code: <a href="../code/34_nested_patterns.sml"><code>34_nested_patterns.sml</code></a>, <a href="../code/35_more_nested_patterns.sml"><code>35_more_nested_patterns.sml</code></a></p>
+</section><section id="s10">
+<h3><span class="n">10</span><span>Function patterns: fun with multiple cases</span></h3>
+<div class="col"><p><code>fun f p1 = e1 | f p2 = e2</code> is sugar for <code>fun f x = case x of p1 => e1 | p2 => e2</code>. <a href="../docs/section2sum.pdf#page=15">[summary p.15]</a></p>
+</div>
+<pre><code>fun eval (Constant i) = i
+  | eval (Negate e) = ~ (eval e)
+  | eval (Add (a, b)) = eval a + eval b
+  | eval (Multiply (a, b)) = eval a * eval b</code></pre>
+<p class="col">Lecture code: <a href="../code/37_function_patterns.sml"><code>37_function_patterns.sml</code></a></p>
+</section></div><div class="part"><div class="part-n">Part III</div><h2>Control and cost</h2><p>Exceptions for errors; tail recursion for loops without stack growth.</p></div><div class="wrap"><section id="s11">
+<h3><span class="n">11</span><span>Exceptions</span></h3>
+<div class="col"><p><code>exception E of t</code> declares, <code>raise E v</code> throws, <code>e handle E x => e2</code> catches; exception values have type <code>exn</code>. <a href="../docs/section2sum.pdf#page=16">[summary p.16]</a></p>
+</div>
+<pre><code>exception MyUndesirableCondition
+fun maxlist (xs, ex) =
+    case xs of
+        [] =&gt; raise ex
+      | x :: [] =&gt; x
+      | x :: xs&#x27; =&gt; Int.max (x, maxlist (xs&#x27;, ex))
+
+val w = maxlist ([], MyUndesirableCondition) handle MyUndesirableCondition =&gt; 42</code></pre>
+<p class="col">Lecture code: <a href="../code/38_exceptions.sml"><code>38_exceptions.sml</code></a></p>
+</section><section id="s12">
+<h3><span class="n">12</span><span>Tail recursion and accumulators</span></h3>
+<div class="col"><p>A call is a <strong>tail call</strong> when the caller has nothing left to do after it; ML then reuses the stack frame, so it runs like a loop. <a href="../docs/section2sum.pdf#page=17">[summary p.17]</a></p>
+<p>Recipe: add a helper with an extra <em>accumulator</em> argument; the old base-case answer becomes the initial accumulator; the base case returns acc.</p>
+</div>
+<pre><code>fun fact n =                       (* not tail: n * (...) waits *)
+    if n = 0 then 1 else n * fact (n - 1)
+
+fun fact2 n =                      (* tail recursive with accumulator *)
+    let fun aux (n, acc) = if n = 0 then acc else aux (n - 1, acc * n)
+    in aux (n, 1) end</code></pre>
+<details class="try"><summary>Try first: Make <code>sum : int list -> int</code> tail recursive.</summary><p class="hint">Hint: what does the base case return now?</p><p><code>fun sum xs = let fun aux (xs, acc) = case xs of [] => acc | x::xs' => aux (xs', x + acc) in aux (xs, 0) end</code></p></details>
+<p class="col">Lecture code: <a href="../code/39_tail_recursion.sml"><code>39_tail_recursion.sml</code></a>, <a href="../code/40_accumulators.sml"><code>40_accumulators.sml</code></a></p>
+</section><section id="s13">
+<h3><span class="n">13</span><span>Tail position, precisely</span></h3>
+<div class="col"><p>Tail position is defined recursively: the body of a fun is in tail position, and only some subexpressions inherit it. <a href="../docs/section2sum.pdf#page=19">[summary p.19]</a></p>
+</div>
+<div class="tw"><table><thead><tr><th>Expression in tail position</th><th>Which parts stay in tail position</th></tr></thead><tbody><tr><td><code>fun f x = e</code></td><td>e</td></tr><tr><td><code>if e1 then e2 else e3</code></td><td>e2, e3 (not e1)</td></tr><tr><td><code>case e of p => e1 | ...</code></td><td>each branch (not e)</td></tr><tr><td><code>let ... in e end</code></td><td>e (not the bindings)</td></tr><tr><td><code>f (e1)</code> argument</td><td>never the argument</td></tr></tbody></table></div>
+<div class="note crit"><span class="note-label">Easy to get wrong: &quot;tail recursion is always better&quot;</span><p>Not for everything: on trees or when the natural version is clearer, plain recursion is fine. Use accumulators where a loop would be natural.</p></div>
+</section></div><div class="wrap"><section id="s14"><h3><span class="n">14</span><span>In short</span></h3>
+<ul class="col"><li>Compound types = each-of + one-of + self-reference.</li><li>Tuples are records with fields 1, 2, ...; every function takes one argument.</li><li>Datatype constructors build and tag; case checks the tag and extracts data, with exhaustiveness warnings.</li><li>Nested patterns replace nested case and hd/tl/null.</li><li>Tail calls need nothing after them; accumulators turn recursion into loops.</li></ul>
+<div class="note ok"><span class="note-label">Stuck on any section? Ask your agent.</span><p>Your AI coach is your teacher: ask a follow-up on anything unclear, or say "quiz me on module-2" to run <code>/learn-session</code>.</p></div>
+<div class="note"><span class="note-label">Next step</span><p>Rewrite two of your Homework 1 functions with pattern matching instead of hd/tl/null, then run <code>/learn-session module-2</code>.</p></div>
+</section>
+<p class="crumb" data-nav-footer><a href="index.html">Lessons</a> <a href="../index.html">Topic hub</a> <a href="../docs/section2sum.pdf">Section summary (PDF)</a></p></div>
+</main></div></body></html>

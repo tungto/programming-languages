@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.kit-new
+.claude/settings.local.json
+.claude/settings.json.bak-*

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inference, modules and equivalence · module-4</title>
+<link rel="stylesheet" href="../assets/lesson.css"><script src="../assets/lesson.js" defer></script></head>
+<body data-ui-dark="Dark" data-ui-light="Light" data-ui-pause="Pause" data-ui-resume="Resume">
+<div class="layout">
+<aside class="rail"><div class="rail-brand">Inference, modules and equivalence</div><div class="rail-sub">module-4 study guide</div>
+<button class="rail-toggle" id="navToggle" aria-expanded="false">Contents</button>
+<nav id="toc"><div class="rail-part">I · Type inference</div><a href="#s1"><span class="n">1</span><span>What type inference is</span></a><a href="#s2"><span class="n">2</span><span>How ML does it</span></a><a href="#s3"><span class="n">3</span><span>Value restriction and harder cases</span></a><a href="#s4"><span class="n">4</span><span>Mutual recursion</span></a><div class="rail-part">II · Modules</div><a href="#s5"><span class="n">5</span><span>Structures for namespaces</span></a><a href="#s6"><span class="n">6</span><span>Signatures and hiding</span></a><a href="#s7"><span class="n">7</span><span>Abstract types protect invariants</span></a><a href="#s8"><span class="n">8</span><span>Signature matching rules</span></a><a href="#s9"><span class="n">9</span><span>Equivalent implementations, different types</span></a><div class="rail-part">III · Equivalence</div><a href="#s10"><span class="n">10</span><span>What equivalence means</span></a><a href="#s11"><span class="n">11</span><span>Standard equivalences</span></a><a href="#s12"><span class="n">12</span><span>Revisiting the definition</span></a><div class="rail-part">Close</div><a href="#s13"><span class="n">13</span><span>In short</span></a></nav></aside>
+<main>
+<header class="masthead"><div class="eyebrow">Study guide · from section summary</div>
+<h1>Inference, modules and equivalence</h1>
+<p class="lede">Section 4 in one page: how the type checker finds types with no annotations, how modules hide details, and what "equivalent code" means. It is a guided re-read with try-first questions, not a replacement for the homework or the videos.</p>
+<div class="meta"><span><b>Source</b> · <a href="../docs/section4sum.pdf">section4sum.pdf</a> (Grossman, Coursera PL)</span>
+<span><b>Time</b> · about 70 min, split by part</span><span><b>How to use</b> · answer each "Try first" out loud before opening it</span>
+<span><b>Recommended</b> · <a href="../docs/section4sum.pdf">Section 4 summary PDF</a></span></div></header>
+<div class="part"><div class="part-n">Part I</div><h2>Type inference</h2><p>How ML finds every type without annotations.</p></div><div class="wrap"><section id="s1">
+<h3><span class="n">1</span><span>What type inference is</span></h3>
+<div class="col"><p><strong>Type inference</strong> gives every binding a type that the checker could have accepted with annotations; it is a separate question from static vs dynamic typing. <a href="../docs/section4sum.pdf#page=1">[summary p.1]</a></p>
+</div>
+<div class="tw"><table><thead><tr><th>Language</th><th>Static?</th><th>Inferred?</th></tr></thead><tbody><tr><td>ML</td><td>yes</td><td>yes, almost fully</td></tr><tr><td>Java / C</td><td>yes</td><td>partly (local var, auto)</td></tr><tr><td>Racket / JS</td><td>no (dynamic)</td><td>n/a</td></tr></tbody></table></div>
+<p class="col">Lecture code: <a href="../code/66_what_is_type_inference.sml"><code>66_what_is_type_inference.sml</code></a></p>
+</section><section id="s2">
+<h3><span class="n">2</span><span>How ML does it</span></h3>
+<div class="col"><p>Bindings are checked <strong>in order</strong>; for each one, collect constraints from how variables are used, solve them, and turn leftover unknowns into <code>'a</code>, <code>'b</code>. <a href="../docs/section4sum.pdf#page=2">[summary p.2]</a></p>
+</div>
+<pre><code>fun f x =               (* f : T1 -&gt; T2,  x : T1 *)
+    let val (y, z) = x     (* T1 = T3 * T4 *)
+    in abs y + z end       (* abs : int -&gt; int, so T3 = int; + gives T4 = int, T2 = int *)
+(* f : int * int -&gt; int *)</code></pre>
+<details class="try"><summary>Try first: Infer the type of <code>fun g (f, x) = f (f x)</code>.</summary><p class="hint">Hint: write T1 for f, T2 for x, then add one equation per use</p><p><code>('a -> 'a) * 'a -> 'a</code>: f's result is fed back into f, so its input and output types must match.</p></details>
+<p class="col">Lecture code: <a href="../code/67_ml_type_inference.sml"><code>67_ml_type_inference.sml</code></a>, <a href="../code/68_type_inference_examples.sml"><code>68_type_inference_examples.sml</code></a>, <a href="../code/69_polymorphic_examples.sml"><code>69_polymorphic_examples.sml</code></a></p>
+</section><section id="s3">
+<h3><span class="n">3</span><span>Value restriction and harder cases</span></h3>
+<div class="col"><p>A val binding gets a polymorphic type only if its expression is a <strong>value or a variable</strong>; this blocks a <code>'a list ref</code> that could hold both strings and ints. <a href="../docs/section4sum.pdf#page=6">[summary p.6]</a></p>
+</div>
+<pre><code>val r = ref NONE          (* would be &#x27;a option ref: unsafe *)
+val _ = r := SOME &quot;hi&quot;
+val i = 1 + valOf (!r)     (* the restriction rejects this program *)</code></pre>
+<div class="note crit"><span class="note-label">Easy to get wrong: the restriction is only about refs</span><p>The checker cannot tell which calls make refs, so it restricts all non-value val bindings, including <code>val f = map g</code>.</p></div>
+<p class="col">Lecture code: <a href="../code/70_other_inference.sml"><code>70_other_inference.sml</code></a></p>
+</section><section id="s4">
+<h3><span class="n">4</span><span>Mutual recursion</span></h3>
+<div class="col"><p><code>fun f1 ... and f2 ...</code> (and <code>datatype t1 = ... and t2 = ...</code>) lets bindings refer to each other; the other route is passing a function as an argument. <a href="../docs/section4sum.pdf#page=7">[summary p.7]</a></p>
+</div>
+<pre><code>fun even n = if n = 0 then true else odd (n - 1)
+and odd n = if n = 0 then false else even (n - 1)</code></pre>
+<details class="try"><summary>Try first: How would you write even/odd without <code>and</code>?</summary><p>Define odd first taking a function argument: <code>fun odd (f, n) = ... f (n-1)</code>, then <code>fun even n = ... odd (even, n - 1)</code>.</p></details>
+<p class="col">Lecture code: <a href="../code/71_mutual_recursion.sml"><code>71_mutual_recursion.sml</code></a></p>
+</section></div><div class="part"><div class="part-n">Part II</div><h2>Modules</h2><p>Structures group bindings; signatures decide what outsiders can see.</p></div><div class="wrap"><section id="s5">
+<h3><span class="n">5</span><span>Structures for namespaces</span></h3>
+<div class="col"><p><code>structure M = struct bindings end</code> groups bindings; outside, use <code>M.name</code>, or <code>open M</code> (best only for testing). <a href="../docs/section4sum.pdf#page=9">[summary p.9]</a></p>
+</div>
+<pre><code>structure MyMathLib = struct
+  fun fact x = if x = 0 then 1 else x * fact (x - 1)
+  val half_pi = Math.pi / 2.0
+end
+val pi = MyMathLib.half_pi + MyMathLib.half_pi</code></pre>
+<p class="col">Lecture code: <a href="../code/72_namespace_mgmt.sml"><code>72_namespace_mgmt.sml</code></a></p>
+</section><section id="s6">
+<h3><span class="n">6</span><span>Signatures and hiding</span></h3>
+<div class="col"><p>A signature is a type for a module; <code>structure M :> SIG</code> makes <strong>anything not in SIG invisible</strong> outside, so you can change it freely. <a href="../docs/section4sum.pdf#page=9">[summary p.9]</a></p>
+</div>
+<pre><code>signature MATHLIB = sig
+  val fact : int -&gt; int
+  val half_pi : real
+end
+structure MyMathLib :&gt; MATHLIB = struct ... (* doubler hidden *) end</code></pre>
+<p class="col">Lecture code: <a href="../code/73_signatures.sml"><code>73_signatures.sml</code></a></p>
+</section><section id="s7">
+<h3><span class="n">7</span><span>Abstract types protect invariants</span></h3>
+<div class="col"><p>In a signature, <code>type rational</code> with no definition is <strong>abstract</strong>: clients can only use the module's functions, so they cannot build a value that breaks the invariant (e.g. denominator 0, not reduced). <a href="../docs/section4sum.pdf#page=11">[summary p.11]</a></p>
+<p>Cute twist: you may expose a constructor as a function, e.g. <code>val Whole : int -> rational</code>, without exposing the datatype itself.</p>
+</div>
+<pre><code>signature RATIONAL_B = sig
+  type rational                          (* abstract: constructors hidden *)
+  exception BadFrac
+  val make_frac : int * int -&gt; rational
+  val add : rational * rational -&gt; rational
+  val toString : rational -&gt; string
+end</code></pre>
+<div class="note crit"><span class="note-label">Easy to get wrong: exposing the datatype</span><p>If the signature shows <code>datatype rational = Whole of int | Frac of int*int</code>, clients can write <code>Frac (1, 0)</code> and break every invariant.</p></div>
+<p class="col">Lecture code: <a href="../code/74_module_example.sml"><code>74_module_example.sml</code></a>, <a href="../code/75_signatures_for_example.sml"><code>75_signatures_for_example.sml</code></a></p>
+</section><section id="s8">
+<h3><span class="n">8</span><span>Signature matching rules</span></h3>
+<div class="col"><p><code>M :> S</code> type-checks when every non-abstract type in S is in M, every abstract type in S is defined in M, every val in S has a type in M at least as general, and every exception in S is in M. <a href="../docs/section4sum.pdf#page=14">[summary p.14]</a></p>
+</div>
+<details class="try"><summary>Try first: Can a structure have extra bindings not in the signature?</summary><p>Yes - they are just hidden. The reverse (signature names something the structure lacks) is an error.</p></details>
+</section><section id="s9">
+<h3><span class="n">9</span><span>Equivalent implementations, different types</span></h3>
+<div class="col"><p>Two structures are equivalent if <strong>no client can tell them apart</strong> through the signature; and each structure's abstract type is distinct, so you cannot mix their values. <a href="../docs/section4sum.pdf#page=15">[summary p.15]</a></p>
+</div>
+<pre><code>(* Rat1.rational and Rat2.rational are different types, even with the same
+   signature: Rat1.toString (Rat2.make_frac (1,2)) does not type-check. *)</code></pre>
+<p class="col">Lecture code: <a href="../code/77_equivalent_structure.sml"><code>77_equivalent_structure.sml</code></a>, <a href="../code/78_another_equivalent_structure.sml"><code>78_another_equivalent_structure.sml</code></a>, <a href="../code/79_modules_different_types.sml"><code>79_modules_different_types.sml</code></a></p>
+</section></div><div class="part"><div class="part-n">Part III</div><h2>Equivalence</h2><p>When can you replace one piece of code with another?</p></div><div class="wrap"><section id="s10">
+<h3><span class="n">10</span><span>What equivalence means</span></h3>
+<div class="col"><p>Two functions are equivalent if, for every input, they give the <strong>same result, same (non-)termination and same side effects</strong>. Avoiding side effects makes this far easier. <a href="../docs/section4sum.pdf#page=17">[summary p.17]</a></p>
+</div>
+<pre><code>fun f x = x + x                 (* equivalent to fun f x = 2 * x *)
+fun g (f, x) = (f x) + (f x)    (* NOT equivalent to 2 * f x if f prints *)</code></pre>
+<details class="try"><summary>Try first: Are <code>fun f x = let val y = g x in y + y end</code> and <code>fun f x = g x + g x</code> equivalent?</summary><p>Only if g has no side effects (and terminates). Otherwise the second calls g twice.</p></details>
+</section><section id="s11">
+<h3><span class="n">11</span><span>Standard equivalences</span></h3>
+<div class="col"><p>A few rewrites are always safe in ML; each one has a precondition you must check. <a href="../docs/section4sum.pdf#page=19">[summary p.19]</a></p>
+</div>
+<div class="tw"><table><thead><tr><th>Rewrite</th><th>Safe when</th></tr></thead><tbody><tr><td>rename a variable consistently</td><td>new name not already used in the body</td></tr><tr><td>use or remove a helper (<code>val y = 2; fun f x = x + y</code>)</td><td>the helper's free variables mean the same where it is used</td></tr><tr><td><code>fn x => f x</code> → <code>f</code></td><td>evaluating f has no effect (it is a variable/value)</td></tr><tr><td><code>let val x = e1 in e2 end</code> → <code>(fn x => e2) e1</code></td><td>always (it is how let is defined)</td></tr></tbody></table></div>
+</section><section id="s12">
+<h3><span class="n">12</span><span>Revisiting the definition</span></h3>
+<div class="col"><p>Equivalence depends on the <strong>level you observe</strong>: PL equivalence ignores speed, but an asymptotic (big-O) view or a systems view (constant factors) may not. <a href="../docs/section4sum.pdf#page=21">[summary p.21]</a></p>
+</div>
+<div class="kv"><div><dt>PL equivalence</dt><dd>same results and effects, any speed.</dd></div><div><dt>Asymptotic</dt><dd>same, and same big-O growth.</dd></div><div><dt>Systems</dt><dd>same, and comparable real-world speed.</dd></div></div>
+</section></div><div class="wrap"><section id="s13"><h3><span class="n">13</span><span>In short</span></h3>
+<ul class="col"><li>ML infers types by collecting constraints in binding order; leftovers become 'a.</li><li>Value restriction: only values and variables get polymorphic val types.</li><li><code>and</code> gives mutual recursion for functions and datatypes.</li><li>Signatures with abstract types let modules hide representation and protect invariants.</li><li>Equivalent = no client can observe a difference; no side effects makes it easier.</li></ul>
+<div class="note ok"><span class="note-label">Stuck on any section? Ask your agent.</span><p>Your AI coach is your teacher: ask a follow-up on anything unclear, or say "quiz me on module-4" to run <code>/learn-session</code>.</p></div>
+<div class="note"><span class="note-label">Next step</span><p>Write a signature that hides one invariant from your own code (e.g. a sorted list), then run <code>/learn-session module-4</code>.</p></div>
+</section>
+<p class="crumb" data-nav-footer><a href="index.html">Lessons</a> <a href="../index.html">Topic hub</a> <a href="../docs/section4sum.pdf">Section summary (PDF)</a></p></div>
+</main></div></body></html>
